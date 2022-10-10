@@ -80,9 +80,22 @@ let chrDC;         // 色のゆらめき     (0.0 - 1.0)
 let chrDV          // 明るさのゆらめき (0.0 - 1.0)
 let chrPattern;    // 発光パターン
 
-/********** その他の変数 ***********/
+/********** その他の定数・変数 (BLE通信の保留処理のため) ***********/
+// スライダの番号
+const INDEX = {
+  Brightness:0, H1:1, S1:2, H2:3, S2:4,
+  T_2color:5, T_fade:6, T_round:7, T_fluct:8,
+  DC:9, DV:10,
+  ALL:11
+};
+// キャラクタリスティックの型の番号
+const CHARTYPE = {
+  UINT8:0, UINT16:1
+};
 // 前回送信時刻
-let last_time = Date.now(); // TODO
+let last_time = Array(INDEX.ALL).fill(0);
+// 送信保留フラグ
+let pending = Array(INDEX.ALL).fill(false);
 
 /********** UIのイベントハンドラ ***********/
 // 「せつぞく」ボタン
@@ -248,29 +261,41 @@ btn_back.addEventListener('click', function (){
   panel_setting.style.display = "none";
 });
 
-let pending = false;
+async function sendSliderVal(index, func, chr, type, val)
+{
+  const now = Date.now();
+  const elapsed = now - last_time[index];
+  if(elapsed < 100){
+    if(pending[index] == false){
+      setTimeout(func, 100);
+    }
+    pending[index] = true;
+    return;
+  }
+  last_time[index] = now;
+  pending[index] = false;
+  let buff;
+  if(type == CHARTYPE.UINT8){
+    buff = new Uint8Array([val]);
+  }else if(type == CHARTYPE.UINT16){
+    buff = new Uint16Array([val]);
+  }
+  await chr.writeValue(buff).then(() => {
+    console.log('send:' + val);
+  }).catch(()=>{
+    if(pending[index] == false){
+      setTimeout(func, 100);
+    }
+    pending[index] = true;
+  });
+}
 
 // いろみ1 スライダー
 slider_H1.addEventListener('input', sendH1);
-
 async function sendH1(){
   const H1 = Number(slider_H1.value) * 256;
   DisplayColor1();
-
-  const now = Date.now();
-  const elapsed = now - last_time;
-  if(elapsed < 100){
-    if(pending == false){
-      setTimeout(sendH1, 100);
-    }
-    pending = true;
-    return;
-  }
-  last_time = now;
-  pending = false;
-  await chrH1.writeValue(new Uint16Array([H1])).then(() => {
-    console.log('sendPattern:' + H1);
-  });
+  sendSliderVal(INDEX.H1, sendH1, chrH1, CHARTYPE.UINT16, H1);
 }
 
 // しろさ1 スライダー

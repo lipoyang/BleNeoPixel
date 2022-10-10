@@ -96,6 +96,9 @@ const CHARTYPE = {
 let last_time = Array(INDEX.ALL).fill(0);
 // 送信保留フラグ
 let pending = Array(INDEX.ALL).fill(false);
+// 時間
+const SEND_INTERVAL = 50;  // [msec] これ未満の間隔での送信は保留する
+const SEND_DELAY    = 50; // [msec] これだけ待って再送信する  
 
 /********** UIのイベントハンドラ ***********/
 // 「せつぞく」ボタン
@@ -265,10 +268,8 @@ async function sendSliderVal(index, func, chr, type, val)
 {
   const now = Date.now();
   const elapsed = now - last_time[index];
-  if(elapsed < 100){
-    if(pending[index] == false){
-      setTimeout(func, 100);
-    }
+  if(elapsed < SEND_INTERVAL){
+    if(pending[index] == false) setTimeout(func, SEND_DELAY);
     pending[index] = true;
     return;
   }
@@ -283,9 +284,7 @@ async function sendSliderVal(index, func, chr, type, val)
   await chr.writeValue(buff).then(() => {
     console.log('send:' + val);
   }).catch(()=>{
-    if(pending[index] == false){
-      setTimeout(func, 100);
-    }
+    if(pending[index] == false) setTimeout(func, SEND_DELAY);
     pending[index] = true;
   });
 }

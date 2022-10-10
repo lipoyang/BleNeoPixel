@@ -51,6 +51,8 @@ void BleNeoPixel::begin(NeoPixelCtrl& controller)
         Serial.println("ERROR: starting BLE module failed!");
         while (1);
     }
+    // Connection Intervalの設定
+    BLE.setConnectionInterval(6, 40); // 7.25ms - 100ms
     
     // アドバタイズするローカル名とサービスを設定
     BLE.setLocalName("NeoPixel");

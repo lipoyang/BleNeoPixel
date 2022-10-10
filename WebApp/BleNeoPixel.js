@@ -248,34 +248,31 @@ btn_back.addEventListener('click', function (){
   panel_setting.style.display = "none";
 });
 
+let pending = false;
+
 // いろみ1 スライダー
-slider_H1.addEventListener('input', function(){
+slider_H1.addEventListener('input', sendH1);
+
+async function sendH1(){
+  const H1 = Number(slider_H1.value) * 256;
+  DisplayColor1();
+
   const now = Date.now();
   const elapsed = now - last_time;
   if(elapsed < 100){
-    console.log(`last = ${last_time}, now = ${now}`);
+    if(pending == false){
+      setTimeout(sendH1, 100);
+    }
+    pending = true;
     return;
   }
-  console.log(`last = ${last_time}, now = ${now}`);
   last_time = now;
-  const H1 = Number(slider_H1.value) * 256;
-  DisplayColor1();
-  chrH1.writeValue(new Uint16Array([H1])).then(() => {
+  pending = false;
+  await chrH1.writeValue(new Uint16Array([H1])).then(() => {
     console.log('sendPattern:' + H1);
   });
-});
-slider_H1.addEventListener('change', function(){
-  console.log('HOGE');
-  const H1 = Number(slider_H1.value) * 256;
-  DisplayColor1();
-  chrH1.writeValue(new Uint16Array([H1])).then(() => {
-    console.log('sendPattern:' + H1);
-  }).catch(() =>  {
-    return Promise.resolve()
-        .then(() => this.delayPromise(500))
-        .then(() => { chrH1.writeValue(new Uint16Array([H1]));});
-  });
-});
+}
+
 // しろさ1 スライダー
 slider_S1.addEventListener('input', function(){
   const S1 = 255 - Number(slider_S1.value);

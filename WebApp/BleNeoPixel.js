@@ -283,14 +283,14 @@ slider_H2.addEventListener('input', sendH2);
 async function sendH2(){
   const H2 = Number(slider_H2.value) * 256;
   DisplayColor2();
-  sendSliderVal(INDEX.H2, sendH1, chrH2, CHARTYPE.UINT16, H2);
+  sendSliderVal(INDEX.H2, sendH2, chrH2, CHARTYPE.UINT16, H2);
 }
 // しろさ2 スライダー
 slider_S2.addEventListener('input', sendS2);
 async function sendS2(){
   const S2 = 255 - Number(slider_S2.value);
   DisplayColor2();
-  sendSliderVal(INDEX.S2, sendS1, chrS2, CHARTYPE.UINT8, S2);
+  sendSliderVal(INDEX.S2, sendS2, chrS2, CHARTYPE.UINT8, S2);
 }
 // じかん(ふたいろ) スライダー
 slider_T_2color.addEventListener('input', sendT_2color);

@@ -183,6 +183,7 @@ void NeoPixelCtrl::patternFade()
 // ぐるぐる
 void NeoPixelCtrl::patternRound()
 {
+#if 0
     // offset = 0 ～ LED_MAX-1 (周期 T_round)
     int offset = LED_MAX * ((DELTA_T * n_cnt) % T_round) / T_round;
     
@@ -195,6 +196,22 @@ void NeoPixelCtrl::patternRound()
         int s = (S1*ratio + S2*(LED_MAX - ratio)) / LED_MAX;
         pixels.setPixelColor(i, pixels.ColorHSV(h,s,255));
     }
+#else
+    // ratio = 256 ～ 0 ～ 256 (周期 T_round)
+    int ratio = abs(-256 + 512 * ((DELTA_T * n_cnt) % T_round) / T_round);
+    
+    for(int i=0;i<LED_MAX;i++){
+        
+        // ratio = 256 ～ 0 ～ 256 (周期 T_round)
+        int offset = (T_round * i) / LED_MAX;
+        int ratio = abs(-256 + 512 * ((DELTA_T * n_cnt + offset) % T_round) / T_round);
+        
+        // 2色の中間色
+        int h = (H1*ratio + H2*(256 - ratio)) / 256;
+        int s = (S1*ratio + S2*(256 - ratio)) / 256;
+        pixels.setPixelColor(i, pixels.ColorHSV(h,s,255));
+    }
+#endif
 }
 
 // ゆらめき

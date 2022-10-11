@@ -200,21 +200,26 @@ void NeoPixelCtrl::patternRound()
 // ゆらめき
 void NeoPixelCtrl::patternFluction()
 {
-    for(int i=0;i<LED_MAX;i++){
-        
-        // ゆらぎの計算
-//      float fh = fluct[i][F_HUE].calc() * 2.0 - 1.0; // -1.0 ～ 1.0
-//      float fs = fluct[i][F_SAT].calc(); // 0.0 ～ 1.0
-        float fc = fluct[i][F_COL].calc(); // 0.0 ～ 1.0
-        float fv = fluct[i][F_VAL].calc(); // 0.0 ～ 1.0
-        
-//      uint16_t h = H1 + (int)((float)0x10000 * dH * fh);
-//      int s = (int)((float)S1 * (1.0 - dS * fs));
-        int h = (int)((float)H1 * (1.0F - dC * fc) + (float)H2 * dC * fc);
-        int s = (int)((float)S1 * (1.0F - dC * fc) + (float)S2 * dC * fc);
-        int v = (int)( 255.0F   * (1.0F - dV * fv));
-        
-        pixels.setPixelColor(i, pixels.ColorHSV(h,s,v));
+    static int cnt = 0;
+    cnt++;
+    if(cnt >= T_fluct / DELTA_T){
+        cnt = 0;
+        for(int i=0;i<LED_MAX;i++){
+            
+            // ゆらぎの計算
+//          float fh = fluct[i][F_HUE].calc() * 2.0 - 1.0; // -1.0 ～ 1.0
+//          float fs = fluct[i][F_SAT].calc(); // 0.0 ～ 1.0
+            float fc = fluct[i][F_COL].calc(); // 0.0 ～ 1.0
+            float fv = fluct[i][F_VAL].calc(); // 0.0 ～ 1.0
+            
+//          uint16_t h = H1 + (int)((float)0x10000 * dH * fh);
+//          int s = (int)((float)S1 * (1.0 - dS * fs));
+            int h = (int)((float)H1 * (1.0F - dC * fc) + (float)H2 * dC * fc);
+            int s = (int)((float)S1 * (1.0F - dC * fc) + (float)S2 * dC * fc);
+            int v = (int)( 255.0F   * (1.0F - dV * fv));
+            
+            pixels.setPixelColor(i, pixels.ColorHSV(h,s,v));
+        }
     }
 }
 

@@ -264,31 +264,6 @@ btn_back.addEventListener('click', function (){
   panel_setting.style.display = "none";
 });
 
-async function sendSliderVal(index, func, chr, type, val)
-{
-  const now = Date.now();
-  const elapsed = now - last_time[index];
-  if(elapsed < SEND_INTERVAL){
-    if(pending[index] == false) setTimeout(func, SEND_DELAY);
-    pending[index] = true;
-    return;
-  }
-  last_time[index] = now;
-  pending[index] = false;
-  let buff;
-  if(type == CHARTYPE.UINT8){
-    buff = new Uint8Array([val]);
-  }else if(type == CHARTYPE.UINT16){
-    buff = new Uint16Array([val]);
-  }
-  await chr.writeValue(buff).then(() => {
-    console.log('send:' + val);
-  }).catch(()=>{
-    if(pending[index] == false) setTimeout(func, SEND_DELAY);
-    pending[index] = true;
-  });
-}
-
 // いろみ1 スライダー
 slider_H1.addEventListener('input', sendH1);
 async function sendH1(){
@@ -296,63 +271,69 @@ async function sendH1(){
   DisplayColor1();
   sendSliderVal(INDEX.H1, sendH1, chrH1, CHARTYPE.UINT16, H1);
 }
-
 // しろさ1 スライダー
-slider_S1.addEventListener('input', function(){
+slider_S1.addEventListener('input', sendS1);
+async function sendS1(){
   const S1 = 255 - Number(slider_S1.value);
   DisplayColor1();
-  chrS1.writeValue(new Uint8Array([S1])); // TODO
-});
+  sendSliderVal(INDEX.S1, sendS1, chrS1, CHARTYPE.UINT8, S1);
+}
 // いろみ2 スライダー
-slider_H2.addEventListener('input', function(){
+slider_H2.addEventListener('input', sendH2);
+async function sendH2(){
   const H2 = Number(slider_H2.value) * 256;
   DisplayColor2();
-  chrH2.writeValue(new Uint16Array([H2])); // TODO
-});
+  sendSliderVal(INDEX.H2, sendH1, chrH2, CHARTYPE.UINT16, H2);
+}
 // しろさ2 スライダー
-slider_S2.addEventListener('input', function(){
+slider_S2.addEventListener('input', sendS2);
+async function sendS2(){
   const S2 = 255 - Number(slider_S2.value);
   DisplayColor2();
-  chrS2.writeValue(new Uint8Array([S2])); // TODO
-});
-
+  sendSliderVal(INDEX.S2, sendS1, chrS2, CHARTYPE.UINT8, S2);
+}
 // じかん(ふたいろ) スライダー
-slider_T_2color.addEventListener('input', function(){
+slider_T_2color.addEventListener('input', sendT_2color);
+async function sendT_2color(){
   const t = Number(slider_T_2color.value) * 100;
-  chrT_2color.writeValue(new Uint16Array([t])); // TODO
-});
+  sendSliderVal(INDEX.T_2color, sendT_2color, chrT_2color, CHARTYPE.UINT16, t);
+}
 // じかん(ほたる) スライダー
-slider_T_fade.addEventListener('input', function(){
+slider_T_fade.addEventListener('input', sendT_fade);
+async function sendT_fade(){
   const t = Number(slider_T_fade.value) * 100;
-  chrT_fade.writeValue(new Uint16Array([t])); // TODO
-});
+  sendSliderVal(INDEX.T_fade, sendT_fade, chrT_fade, CHARTYPE.UINT16, t);
+}
 // じかん(ぐるぐる) スライダー
-slider_T_round.addEventListener('input', function(){
+slider_T_round.addEventListener('input', sendT_round);
+async function sendT_round(){
   const t = Number(slider_T_round.value) * 100;
-  chrT_round.writeValue(new Uint16Array([t])); // TODO
-});
+  sendSliderVal(INDEX.T_round, sendT_round, chrT_round, CHARTYPE.UINT16, t);
+}
 // じかん(ゆらめき) スライダー
-slider_T_fluct.addEventListener('input', function(){
+slider_T_fluct.addEventListener('input', sendT_fluct);
+async function sendT_fluct(){
   const t = Number(slider_T_fluct.value) * 10;
-  chrT_fluct.writeValue(new Uint16Array([t])); // TODO
-});
-
+  sendSliderVal(INDEX.T_fluct, sendT_fluct, chrT_fluct, CHARTYPE.UINT16, t);
+}
 // ゆらめき(いろ) スライダー
-slider_dC.addEventListener('input', function(){
+slider_dC.addEventListener('input', send_dC);
+async function send_dC (){
   const dC = Number(slider_dC.value);
-  chrDC.writeValue(new Uint8Array([dC])); // TODO
-});
+  sendSliderVal(INDEX.DC, send_dC, chrDC, CHARTYPE.UINT8, dC);
+}
 // ゆらめき(あかるさ) スライダー
-slider_dV.addEventListener('input', function(){
+slider_dV.addEventListener('input', send_dV);
+async function send_dV(){
   const dV = Number(slider_dV.value);
-  chrDV.writeValue(new Uint8Array([dV])); // TODO
-});
-
+  sendSliderVal(INDEX.DV, send_dV, chrDV, CHARTYPE.UINT8, dV);
+}
 // あかるさ(すべて) スライダー
-slider_bright.addEventListener('input', function(){
+slider_bright.addEventListener('input', sendBright);
+async function sendBright(){
   const b = Number(slider_bright.value);
-  chrBrightness.writeValue(new Uint8Array([b])); // TODO
-});
+  sendSliderVal(INDEX.Brightness, sendBright, chrBrightness, CHARTYPE.UINT8, b);
+}
 
 /********** BLEのイベントハンドラ ***********/
 // 切断時
@@ -439,6 +420,42 @@ function SwitchControlPanel(pattern){
 function sendPattern(pattern) {
   chrPattern.writeValue(new Uint8Array([pattern])).then(() => {
     console.log('sendPattern:' + pattern);
+  });
+}
+
+// スライダーの値の送信処理 (送信中のときの保留処理を実装)
+// index: スライダーの番号
+// func: リトライ時に実行する関数(呼び出し元の関数)
+// chr: 送信するキャラクタリスティック
+// type: キャラクタリスティックのデータ型の番号
+// val: 送信する値
+async function sendSliderVal(index, func, chr, type, val)
+{
+  // 前回送信からSEND_INTERVAL[ms]未満なら送信保留
+  const now = Date.now();
+  const elapsed = now - last_time[index];
+  if(elapsed < SEND_INTERVAL){
+    // 既に保留中でなければ、SEND_DELAY[ms]後にリトライ予約
+    if(pending[index] == false) setTimeout(func, SEND_DELAY);
+    pending[index] = true; // 保留セット
+    return;
+  }
+  last_time[index] = now;
+  pending[index] = false; // 保留クリア
+  let buff;
+  if(type == CHARTYPE.UINT8){
+    buff = new Uint8Array([val]);
+  }else if(type == CHARTYPE.UINT16){
+    buff = new Uint16Array([val]);
+  }else{
+    console.log('Unexpected data type: ' + type);
+  }
+  await chr.writeValue(buff).then(() => {
+    console.log('send:' + val);
+  }).catch(()=>{
+    // 送信失敗したとき、既に保留中でなければ、SEND_DELAY[ms]後にリトライ予約
+    if(pending[index] == false) setTimeout(func, SEND_DELAY);
+    pending[index] = true; // 保留セット
   });
 }
 

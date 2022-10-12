@@ -67,7 +67,7 @@ const PTN_FLUCT = 0x05; // ゆらめき
 // BLEデバイス
 let bleDevice = null;
 // BLEキャラクタリスティック
-let chrBrightness; // 明るさ(全体) (0-255) // TODO const
+let chrBrightness; // 明るさ(全体) (0-255)
 let chrH1;         // 色1の色相 (0-255)
 let chrS1;         // 色1の彩度 (0-255)
 let chrH2;         // 色2の色相 (0-255)
@@ -209,32 +209,26 @@ btn_connect.addEventListener('click', async function () {
 
 // 「ひといろ」ボタン
 btn_one.addEventListener('click', function () {
-  SwitchControlPanel(PTN_ONE);
   sendPattern(PTN_ONE);
 });
 // 「ふたいろ」ボタン
 btn_two.addEventListener('click', function () {
-  SwitchControlPanel(PTN_TWO);
   sendPattern(PTN_TWO);
 });
 // 「ほたる」ボタン
 btn_fade.addEventListener('click', function () {
-  SwitchControlPanel(PTN_FADE);
   sendPattern(PTN_FADE);
 });
 // 「ぐるぐる」ボタン
 btn_round.addEventListener('click', function () {
-  SwitchControlPanel(PTN_ROUND);
   sendPattern(PTN_ROUND);
 });
 // 「ゆらめき」ボタン
 btn_fluct.addEventListener('click', function () {
-  SwitchControlPanel(PTN_FLUCT);
   sendPattern(PTN_FLUCT);
 });
 // 「けす」ボタン
 btn_off.addEventListener('click', function () {
-  SwitchControlPanel(PTN_OFF);
   sendPattern(PTN_OFF);
 });
 
@@ -416,8 +410,9 @@ function SwitchControlPanel(pattern){
   }
 }
 
-// 発光パターンの送信 TODO
+// 発光パターンの送信
 function sendPattern(pattern) {
+  SwitchControlPanel(pattern);
   chrPattern.writeValue(new Uint8Array([pattern])).then(() => {
     console.log('sendPattern:' + pattern);
   });
@@ -466,7 +461,7 @@ function DisplayColor1()
   const S1 = 255 - Number(slider_S1.value);
   let r,g,b;
   [r,g,b] = ColorHSV(H1, S1, 255);
-  const c = "RGB(" + r + "," + g + "," + b + ")"; // TODO ${}
+  const c = `RGB(${r}, ${g}, ${b})`;
   div_C1.style.backgroundColor = c;
 }
 // いろ2の表示
@@ -476,7 +471,7 @@ function DisplayColor2()
   const S2 = 255 - Number(slider_S2.value);
   let r,g,b;
   [r,g,b] = ColorHSV(H2, S2, 255);
-  const c = "RGB(" + r + "," + g + "," + b + ")";
+  const c = `RGB(${r}, ${g}, ${b})`;
   div_C2.style.backgroundColor = c;
 }
 

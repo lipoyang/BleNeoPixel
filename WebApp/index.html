@@ -28,67 +28,65 @@
       <div id="panel_main" style="display:none">
         <!-- いろ1 -->
         <div class="row mt-4 mb-2">
-          <div class="col-2 ms-4 pe-1" style="font-size: 1.2rem">いろ1</div>
+          <div class="col-3 ms-2 pe-1" style="font-size: 1.2rem">いろ1</div>
           <div class="col me-0 ps-1"><div class="d-grid gap-2">
             <div id="div_C1" class="rounded-pill" style="height: 2em; background-color: #ff0000;"> </div>
           </div></div>
           <div class="col-6"></div>
         </div>
         <div class="row my-1">
-          <div class="col-2 ms-4 pe-1">いろみ</div>
-          <div class="col me-4 ps-1">
+          <div class="col-3 ms-2 pe-1">いろみ</div>
+          <div class="col me-2 ps-1">
             <input type='range' min='0' max='255' step = '1' class='form-range' id='slider_H1' value=0 />
           </div>
         </div>
         <div class="row my-1">
-          <div class="col-2 ms-4 pe-1">しろさ</div>
-          <div class="col me-4 ps-1">
+          <div class="col-3 ms-2 pe-1">しろさ</div>
+          <div class="col me-2 ps-1">
             <input type='range' min='0' max='255' step = '1' class='form-range'  id='slider_S1' value=0 />
           </div>
         </div>
         <!-- 発光パターン -->
         <div class="row mt-3 mb-2">
-          <div class="col ms-4 pe-2"><div class="d-grid gap-0">
-              <button id="btn_one" class="btn btn-primary btn-block rounded-pill">ひといろ</button>
+          <div class="col ms-2 pe-2"><div class="d-grid gap-0">
+            <button id="btn_one" class="btn btn-primary btn-block rounded-pill">ひといろ</button>
           </div></div>
-          <div class="col me-4 ps-2"><div class="d-grid gap-0">
-              <button id="btn_two" class="btn btn-primary btn-block rounded-pill">ふたいろ</button>
+          <div class="col ps-2 pe-2"><div class="d-grid gap-0">
+            <button id="btn_two" class="btn btn-primary btn-block rounded-pill">ふたいろ</button>
           </div></div>
-        </div>
-        <div class="row my-2">
-          <div class="col ms-4 pe-2"><div class="d-grid">
-              <button id="btn_fade" class="btn btn-primary btn-block rounded-pill">ほたる</button>
-          </div></div>
-          <div class="col me-4 ps-2"><div class="d-grid">
-              <button id="btn_round" class="btn btn-primary btn-block rounded-pill">ぐるぐる</button>
+          <div class="col ps-2 me-2"><div class="d-grid">
+            <button id="btn_fade" class="btn btn-primary btn-block rounded-pill">ほたる</button>
           </div></div>
         </div>
         <div class="row mt-2 mb-4">
-          <div class="col ms-4 pe-2"><div class="d-grid">
-              <button id="btn_fluct" class="btn btn-primary btn-block rounded-pill">ゆらめき</button>
+          <div class="col ms-2 pe-2"><div class="d-grid gap-0">
+            <button id="btn_round" class="btn btn-primary btn-block rounded-pill">ぐるぐる</button>
           </div></div>
-          <div class="col me-4 ps-2"><div class="d-grid">
-              <button id="btn_off" class="btn btn-primary btn-block rounded-pill">けす</button>
+          <div class="col ps-2 pe-2"><div class="d-grid gap-0">
+            <button id="btn_fluct" class="btn btn-primary btn-block rounded-pill">ゆらめき</button>
+          </div></div>
+          <div class="col ps-2 me-2"><div class="d-grid">
+            <button id="btn_off" class="btn btn-primary btn-block rounded-pill">けす</button>
           </div></div>
         </div>
         <!-- いろ2 -->
         <div id="panel_C2" style="display:none">
           <div class="row my-2">
-            <div class="col-2 ms-4 pe-1" style="font-size: 1.2rem">いろ2</div>
+            <div class="col-3 ms-2 pe-1" style="font-size: 1.2rem">いろ2</div>
             <div class="col me-0 ps-1"><div class="d-grid gap-2">
               <div id="div_C2" class="rounded-pill" style="height: 2em; background-color: #ff0000;"> </div>
             </div></div>
             <div class="col-6"></div>
           </div>
           <div class="row my-1">
-            <div class="col-2 ms-4 pe-1">いろみ</div>
-            <div class="col me-4 ps-1">
+            <div class="col-3 ms-2 pe-1">いろみ</div>
+            <div class="col me-2 ps-1">
               <input type='range' min='0' max='255' step = '1' class='form-range' id='slider_H2' value=0 />
             </div>
           </div>
           <div class="row my-1">
-            <div class="col-2 ms-4 pe-1">しろさ</div>
-            <div class="col me-4 ps-1">
+            <div class="col-3 ms-2 pe-1">しろさ</div>
+            <div class="col me-2 ps-1">
               <input type='range' min='0' max='255' step = '1' class='form-range'  id='slider_S2' value=0 />
             </div>
           </div>
@@ -96,8 +94,8 @@
         <!-- じかん(ふたいろ) -->
         <div id="panel_2color" style="display:none">
           <div class="row my-4">
-            <div class="col-2 ms-4 pe-1">じかん</div>
-            <div class="col me-4 ps-1">
+            <div class="col-3 ms-2 pe-1">じかん</div>
+            <div class="col me-2 ps-1">
               <input type='range' min='5' max='50' step = '1' class='form-range'  id='slider_T_2color' value=30 />
             </div>
           </div>
@@ -105,8 +103,8 @@
         <!-- じかん(ほたる) -->
         <div id="panel_fade" style="display:none">
           <div class="row my-4">
-            <div class="col-2 ms-4 pe-1">じかん</div>
-            <div class="col me-4 ps-1">
+            <div class="col-3 ms-2 pe-1">じかん</div>
+            <div class="col me-2 ps-1">
               <input type='range' min='5' max='50' step = '1' class='form-range'  id='slider_T_fade' value=30 />
             </div>
           </div>
@@ -114,8 +112,8 @@
         <!-- じかん(ぐるぐる) -->
         <div id="panel_round" style="display:none">
           <div class="row my-4">
-            <div class="col-2 ms-4 pe-1">じかん</div>
-            <div class="col me-4 ps-1">
+            <div class="col-3 ms-2 pe-1">じかん</div>
+            <div class="col me-2 ps-1">
               <input type='range' min='5' max='50' step = '1' class='form-range'  id='slider_T_round' value=30 />
             </div>
           </div>
@@ -123,33 +121,33 @@
         <!-- ゆらめき -->
         <div id="panel_fluct" style="display:none">
           <div class="row my-2">
-            <div class="col ms-4" style="font-size: 1.2rem">ゆらめき</div>
+            <div class="col ms-2" style="font-size: 1.2rem">ゆらめき</div>
           </div>
           <div class="row my-1">
-            <div class="col-2 ms-4 pe-1">じかん</div>
-            <div class="col me-4 ps-1">
+            <div class="col-3 ms-2 pe-1">じかん</div>
+            <div class="col me-2 ps-1">
               <input type='range' min='3' max='50' step = '1' class='form-range'  id='slider_T_fluct' value=3 />
             </div>
           </div>
           <div class="row my-1">
-            <div class="col-2 ms-4 pe-1">いろ</div>
-            <div class="col me-4 ps-1">
+            <div class="col-3 ms-2 pe-1">いろ</div>
+            <div class="col me-2 ps-1">
               <input type='range' min='0' max='100' step = '1' class='form-range'  id='slider_dC' value=0 />
             </div>
           </div>
           <div class="row my-1">
-            <div class="col-2 ms-4 pe-1">あかるさ</div>
-            <div class="col me-4 ps-1">
+            <div class="col-3 ms-2 pe-1">あかるさ</div>
+            <div class="col me-2 ps-1">
               <input type='range' min='0' max='100' step = '1' class='form-range'  id='slider_dV' value=0 />
             </div>
           </div>
         </div> <!-- ゆらめき -->
         <!-- 設定＆切断 -->
         <div class="row mt-4 mb-0">
-          <div class="col ms-4 pe-2"><div class="d-grid gap-0">
+          <div class="col ms-2 pe-2"><div class="d-grid gap-0">
               <button id="btn_setting" class="btn btn-primary btn-block rounded-pill">せってい</button>
           </div></div>
-          <div class="col me-4 ps-2"><div class="d-grid gap-0">
+          <div class="col me-2 ps-2"><div class="d-grid gap-0">
               <button id="btn_disconnect" class="btn btn-primary btn-block rounded-pill">きる</button>
           </div></div>
         </div>
@@ -161,7 +159,7 @@
         </div>
         <!-- あかるさ (すべて) -->
         <div class="row my-2">
-          <div class="col ms-4" style="font-size: 1.2rem">あかるさ (すべて)</div>
+          <div class="col ms-2" style="font-size: 1.2rem">あかるさ (すべて)</div>
         </div>
         <div class="row mt-1 mb-4">
           <div class="col mx-4">
@@ -170,16 +168,16 @@
         </div>
         <!-- セーブ / リセット -->
         <div class="row my-4">
-          <div class="col ms-4 pe-2"><div class="d-grid gap-0">
+          <div class="col ms-2 pe-2"><div class="d-grid gap-0">
               <button id="btn_save" class="btn btn-primary btn-block rounded-pill">セーブ</button>
           </div></div>
-          <div class="col me-4 ps-2"><div class="d-grid gap-0">
+          <div class="col me-2 ps-2"><div class="d-grid gap-0">
               <button id="btn_reset" class="btn btn-primary btn-block rounded-pill">リセット</button>
           </div></div>
         </div>
         <!-- もどる -->
         <div class="row my-4">
-          <div class="col mx-4"><div class="d-grid gap-2">
+          <div class="col mx-2"><div class="d-grid gap-2">
               <button id="btn_back" class="btn btn-primary btn-block rounded-pill">もどる</button>
           </div></div>
         </div>

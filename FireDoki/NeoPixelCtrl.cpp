@@ -19,7 +19,10 @@ typedef struct
     float dC;           // 色のゆらめき     (0.0 - 1.0)
     float dV;           // 明るさのゆらめき (0.0 - 1.0)
     Iluminetion pattern; // 発光パターン
+    uint16_t magicNumber; // 有効データ確認用マジックナンバー
 } PrefsData;
+
+#define MAGIC_NUMBER  0xAA55 // 有効データ確認用マジックナンバー
 
 // 設定値の初期値
 static const PrefsData INIT_DATA = {
@@ -34,7 +37,8 @@ static const PrefsData INIT_DATA = {
     .T_fluct    = 30,
     .dC         = 0.5F,
     .dV         = 0.4F,
-    .pattern    = PTN_ONE_COLOR
+    .pattern    = PTN_ONE_COLOR,
+    .magicNumber = MAGIC_NUMBER
 };
 
 // コンストラクタ
@@ -110,7 +114,7 @@ void NeoPixelCtrl::setPattern (Iluminetion pattern)
 // 設定のセーブ
 void NeoPixelCtrl::save()
 {
-    Serial.println("SAVE!");
+    Serial.println("Saving...");
     
     PrefsData data;
     data.brightness = brightness;
@@ -127,18 +131,14 @@ void NeoPixelCtrl::save()
     data.pattern    = pattern;
     
     int rc = prefs.writePrefs(&data, sizeof(data));
-    if (rc == FDS_SUCCESS){
-      Serial.println("Write OK");
-    }else{
-      Serial.println("Write ERROR");
-    }
+    Serial.println((rc == FDS_SUCCESS) ? "Save OK" : "Save ERROR");
     printSettings();
 }
 
 // 設定のリセット
 void NeoPixelCtrl::reset()
 {
-    Serial.println("RESET!");
+    Serial.println("Resetting...");
     
     brightness = INIT_DATA.brightness;
     H1         = INIT_DATA.H1;
@@ -154,44 +154,43 @@ void NeoPixelCtrl::reset()
     pattern    = INIT_DATA.pattern;
     
     int rc = prefs.writePrefs((void*)(&INIT_DATA), sizeof(INIT_DATA));
-    if (rc == FDS_SUCCESS){
-      Serial.println("Write OK");
-    }else{
-      Serial.println("Write ERROR");
-    }
+    Serial.println((rc == FDS_SUCCESS) ? "Reset OK" : "Reset ERROR");
     printSettings();
 }
 
 // 設定のロード
 void NeoPixelCtrl::load()
 {
+    Serial.println("Loading...");
     PrefsData data; 
     int rc = prefs.readPrefs(&data, sizeof(data));
     if (rc == FDS_SUCCESS)
     {
-        Serial.println("Preferences found");
-        
-        brightness = data.brightness;
-        H1         = data.H1;
-        S1         = data.S1;
-        H2         = data.H2;
-        S2         = data.S2;
-        T_2color   = data.T_2color;
-        T_fade     = data.T_fade;
-        T_round    = data.T_round;
-        T_fluct    = data.T_fluct;
-        dC         = data.dC;
-        dV         = data.dV;
-        pattern    = data.pattern;
-        
-        printSettings();
-    }
-    else
-    {
-        Serial.print("No preferences found. Return code: ");
+        if(data.magicNumber == MAGIC_NUMBER){
+            Serial.println("Load OK");
+            brightness = data.brightness;
+            H1         = data.H1;
+            S1         = data.S1;
+            H2         = data.H2;
+            S2         = data.S2;
+            T_2color   = data.T_2color;
+            T_fade     = data.T_fade;
+            T_round    = data.T_round;
+            T_fluct    = data.T_fluct;
+            dC         = data.dC;
+            dV         = data.dV;
+            pattern    = data.pattern;
+            
+            printSettings();
+        }else{
+            Serial.println("No Data found");
+            // 既定値で初期化
+            this->reset();
+        }
+    }else{
+        Serial.print("Load Error");
         Serial.print(rc); Serial.print(", ");
         Serial.println(prefs.errorString(rc));
-        
         // 既定値で初期化
         this->reset();
     }

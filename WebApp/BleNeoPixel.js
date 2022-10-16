@@ -55,6 +55,7 @@ const UUID_T_fluct    = "5587d9ab-1927-a85c-a9c1-114dfc660496";
 const UUID_DC         = "6ea7f285-3202-f28a-c609-c48cd759ab90";
 const UUID_DV         = "81765da4-71cf-79bc-8e1e-a23130995444";
 const UUID_Pattern    = "7d5c1067-d1a7-a8e8-9dd0-41cbe5e25f0a";
+const UUID_Command    = "0cbb4f9c-652e-abfc-e004-40572a9f55ef";
 // 発光パターン
 const PTN_OFF   = 0x00; // けす
 const PTN_ONE   = 0x01; // ひといろ
@@ -62,6 +63,9 @@ const PTN_TWO   = 0x02; // ふたいろ
 const PTN_FADE  = 0x03; // ほたる
 const PTN_ROUND = 0x04; // ぐるぐる
 const PTN_FLUCT = 0x05; // ゆらめき
+// コマンド
+const CMD_SAVE  = 0x80; // セーブ
+const CMD_RESET = 0x81; // リセット
 
 /********** BLEの変数 ***********/
 // BLEデバイス
@@ -79,6 +83,7 @@ let chrT_fluct;    // ゆらめきの更新周期 [ms]
 let chrDC;         // 色のゆらめき     (0.0 - 1.0)
 let chrDV          // 明るさのゆらめき (0.0 - 1.0)
 let chrPattern;    // 発光パターン
+let chrCommand;    // コマンド
 
 /********** その他の定数・変数 (BLE通信の保留処理のため) ***********/
 // スライダの番号
@@ -133,6 +138,7 @@ btn_connect.addEventListener('click', async function () {
     chrDC         = await service.getCharacteristic(UUID_DC);
     chrDV         = await service.getCharacteristic(UUID_DV);
     chrPattern    = await service.getCharacteristic(UUID_Pattern);
+    chrCommand    = await service.getCharacteristic(UUID_Command);
     // キャラクタリスティックのREAD
     text_connect.innerText = "データ受信中...";
     console.log("Reading Characteristics...");
@@ -246,11 +252,15 @@ btn_disconnect.addEventListener('click', function (){
 
 // 「セーブ」ボタン
 btn_save.addEventListener('click', function (){
-  // TODO
+  chrCommand.writeValue(new Uint8Array([CMD_SAVE])).then(() => {
+    console.log('send Command: SAVE');
+  });
 });
 // 「リセット」ボタン
 btn_reset.addEventListener('click', function (){
-  // TODO
+  chrCommand.writeValue(new Uint8Array([CMD_RESET])).then(() => {
+    console.log('send Command: RESET');
+  });
 });
 // 「もどる」ボタン
 btn_back.addEventListener('click', function (){
@@ -339,6 +349,7 @@ function onDisconnected(event) {
   text_connect.innerText = "";
   panel_main.style.display = "none";
   panel_connect.style.display = "block";
+  panel_setting.style.display = "none";
 }
 
 /********** サブルーチン ***********/

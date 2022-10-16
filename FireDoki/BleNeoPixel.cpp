@@ -19,6 +19,11 @@ CHR_U16 chrT_fluct   ("5587D9AB-1927-A85C-A9C1-114DFC660496", BLERead | BLEWrite
 CHR_U8  chrDC        ("6EA7F285-3202-F28A-C609-C48CD759AB90", BLERead | BLEWrite);
 CHR_U8  chrDV        ("81765DA4-71CF-79BC-8E1E-A23130995444", BLERead | BLEWrite);
 CHR_U8  chrPattern   ("7D5C1067-D1A7-A8E8-9DD0-41CBE5E25F0A", BLERead | BLEWrite);
+CHR_U8  chrCommand   ("0CBB4F9C-652E-ABFC-E004-40572A9F55EF", BLEWrite);
+
+// コマンド定数
+const uint8_t CMD_SAVE  = 0x80; // セーブ
+const uint8_t CMD_RESET = 0x81; // リセット
 
 // 初期化
 void BleNeoPixel::begin(NeoPixelCtrl& controller)
@@ -71,6 +76,7 @@ void BleNeoPixel::begin(NeoPixelCtrl& controller)
     svcNeoPixel.addCharacteristic(chrDC        );
     svcNeoPixel.addCharacteristic(chrDV        );
     svcNeoPixel.addCharacteristic(chrPattern   );
+    svcNeoPixel.addCharacteristic(chrCommand   );
     
     // サービスを追加
     BLE.addService(svcNeoPixel);
@@ -166,6 +172,24 @@ void BleNeoPixel::task()
                 uint8_t bPattern = chrPattern.value();
                 Iluminetion pattern = (Iluminetion)bPattern;
                 controller->setPattern(pattern);
+            }
+            // コマンド
+            if (chrCommand.written())
+            {
+                uint8_t command = chrCommand.value();
+                switch(command)
+                {
+                    case CMD_SAVE:
+                        controller->save();
+                        break;
+                    case CMD_RESET:
+                        controller->reset();
+                        break;
+                    default:
+                        Serial.print("Unknown Command: ");
+                        Serial.print(command, HEX);
+                        break;
+                }
             }
             
         }else{

@@ -11,14 +11,17 @@ void setup()
     delay(100);
     
     neoPixelCtrl.begin();
-    neoPixelCtrl.setPattern(PTN_ONE_COLOR);
-
+    
     bleNeoPixel.begin(neoPixelCtrl);
 }
 
 // メインループ
 void loop()
 {
+    neoPixelCtrl.task();
+    bleNeoPixel.task();
+    
+    // デバッグ用
     if(Serial.available() > 0)
     {
         char c = Serial.read();
@@ -32,7 +35,4 @@ void loop()
             case '5': neoPixelCtrl.setPattern(PTN_FLUCTUATION); break;
         }
     }
-    
-    neoPixelCtrl.task();
-    bleNeoPixel.task();
 }

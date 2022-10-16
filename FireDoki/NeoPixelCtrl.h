@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <Adafruit_NeoPixel.h>
+#include <NanoBLEFlashPrefs.h>
 #include "Fluctuator.h"
 #include "PollingTimer.h"
 
@@ -47,6 +48,10 @@ public:
 //  void setFluctuation(int h, int s, int v);
     void setFluctuation(int c, int v);
     void setPattern (Iluminetion pattern);
+    // コマンド
+    void save();
+    void reset();
+    void load();
     
     // beginとtask
     void begin();
@@ -99,4 +104,10 @@ private:
     IntervalTimer interval;
     // 回数カウント
     int n_cnt;
+    
+    // 設定値保存
+    NanoBLEFlashPrefs prefs;
+    
+    // デバッグ用
+    void printSettings();
 };

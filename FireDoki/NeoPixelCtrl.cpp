@@ -4,25 +4,44 @@
 
 #define DELTA_T     30  // 更新周期[ms]
 
+// 設定値保存用の構造体
+typedef struct
+{
+    uint8_t brightness; // 明るさ(全体) (0-255)
+    uint16_t H1;        // 色1の色相 (0-255)
+    uint8_t  S1;        // 色1の彩度 (0-255)
+    uint16_t H2;        // 色2の色相 (0-255)
+    uint8_t  S2;        // 色2の彩度 (0-255)
+    int T_2color;       // ふたいろの周期 [ms]
+    int T_fade;         // ほたるの周期 [ms]
+    int T_round;        // ぐるぐるの周期 [ms]
+    int T_fluct;        // ゆらめきの更新周期 [ms]
+    float dC;           // 色のゆらめき     (0.0 - 1.0)
+    float dV;           // 明るさのゆらめき (0.0 - 1.0)
+    Iluminetion pattern; // 発光パターン
+} PrefsData;
+
+// 設定値の初期値
+static const PrefsData INIT_DATA = {
+    .brightness = 32,
+    .H1         = 0x0000,
+    .S1         = 255,
+    .H2         = 0x1000,
+    .S2         = 255,
+    .T_2color   = 4000,
+    .T_fade     = 4000,
+    .T_round    = 2000,
+    .T_fluct    = 30,
+    .dC         = 0.5F,
+    .dV         = 0.4F,
+    .pattern    = PTN_ONE_COLOR
+};
+
 // コンストラクタ
 NeoPixelCtrl::NeoPixelCtrl() : 
     pixels( Adafruit_NeoPixel(LED_MAX, LED_PIN, NEO_GRB + NEO_KHZ800) )
 {
-    // 初期値
-    brightness = 32; // 明るさ (マスター)
-    H1 = 0x0000;     // 色1の色相
-    S1 = 255;        // 色1の彩度
-    H2 = 0x1000;     // 色2の色相
-    S2 = 255;        // 色2の彩度
-    T_2color = 4000; // ふたいろの周期
-    T_fade   = 4000; // ほたるの周期
-    T_round  = 2000; // ぐるぐるの周期
-    T_fluct  = 30;   // ゆらめきの更新周期
-//  dH = 0.02;       // 色相のゆらめき
-//  dS = 0.05;       // 彩度のゆらめき
-    dC = 0.5F;       // 色のゆらめき
-    dV = 0.4F;       // 明度のゆらめき
-    pattern = PTN_ONE_COLOR; // 発光パターン
+    n_cnt = 0;
 }
 
 // 明るさの設定 (0-255)
@@ -88,9 +107,102 @@ void NeoPixelCtrl::setPattern (Iluminetion pattern)
     this->pattern = pattern;
 }
 
+// 設定のセーブ
+void NeoPixelCtrl::save()
+{
+    Serial.println("SAVE!");
+    
+    PrefsData data;
+    data.brightness = brightness;
+    data.H1         = H1;
+    data.S1         = S1;
+    data.H2         = H2;
+    data.S2         = S2;
+    data.T_2color   = T_2color;
+    data.T_fade     = T_fade;
+    data.T_round    = T_round;
+    data.T_fluct    = T_fluct;
+    data.dC         = dC;
+    data.dV         = dV;
+    data.pattern    = pattern;
+    
+    int rc = prefs.writePrefs(&data, sizeof(data));
+    if (rc == FDS_SUCCESS){
+      Serial.println("Write OK");
+    }else{
+      Serial.println("Write ERROR");
+    }
+    printSettings();
+}
+
+// 設定のリセット
+void NeoPixelCtrl::reset()
+{
+    Serial.println("RESET!");
+    
+    brightness = INIT_DATA.brightness;
+    H1         = INIT_DATA.H1;
+    S1         = INIT_DATA.S1;
+    H2         = INIT_DATA.H2;
+    S2         = INIT_DATA.S2;
+    T_2color   = INIT_DATA.T_2color;
+    T_fade     = INIT_DATA.T_fade;
+    T_round    = INIT_DATA.T_round;
+    T_fluct    = INIT_DATA.T_fluct;
+    dC         = INIT_DATA.dC;
+    dV         = INIT_DATA.dV;
+    pattern    = INIT_DATA.pattern;
+    
+    int rc = prefs.writePrefs((void*)(&INIT_DATA), sizeof(INIT_DATA));
+    if (rc == FDS_SUCCESS){
+      Serial.println("Write OK");
+    }else{
+      Serial.println("Write ERROR");
+    }
+    printSettings();
+}
+
+// 設定のロード
+void NeoPixelCtrl::load()
+{
+    PrefsData data; 
+    int rc = prefs.readPrefs(&data, sizeof(data));
+    if (rc == FDS_SUCCESS)
+    {
+        Serial.println("Preferences found");
+        
+        brightness = data.brightness;
+        H1         = data.H1;
+        S1         = data.S1;
+        H2         = data.H2;
+        S2         = data.S2;
+        T_2color   = data.T_2color;
+        T_fade     = data.T_fade;
+        T_round    = data.T_round;
+        T_fluct    = data.T_fluct;
+        dC         = data.dC;
+        dV         = data.dV;
+        pattern    = data.pattern;
+        
+        printSettings();
+    }
+    else
+    {
+        Serial.print("No preferences found. Return code: ");
+        Serial.print(rc); Serial.print(", ");
+        Serial.println(prefs.errorString(rc));
+        
+        // 既定値で初期化
+        this->reset();
+    }
+}
+
 // 初期化
 void NeoPixelCtrl::begin()
 {
+    // 保存データ読み出し
+    this->load();
+    
     // NeoPixelの初期化
     pixels.begin();
     pixels.setBrightness(brightness);
@@ -262,4 +374,21 @@ void NeoPixelCtrl::getParams(
     dC          = this->dC;
     dV          = this->dV;
     pattern     = this->pattern;
+}
+
+// デバッグ用
+void NeoPixelCtrl::printSettings()
+{
+    Serial.println(brightness);
+    Serial.println(H1);
+    Serial.println(S1);
+    Serial.println(H2);
+    Serial.println(S2);
+    Serial.println(T_2color);
+    Serial.println(T_fade);
+    Serial.println(T_round);
+    Serial.println(T_fluct);
+    Serial.println(dC);
+    Serial.println(dV);
+    Serial.println(pattern);
 }

@@ -6,8 +6,10 @@
 #include "Fluctuator.h"
 #include "PollingTimer.h"
 
-#define LED_MAX     12  // NeoPixelの数
-#define LED_PIN     D0  // NeoPixelの制御ピン
+#define LED_MAX         12      // NeoPixelの数
+#define LED_PIN         D0      // NeoPixelの制御ピン
+//#define POWER_ON_OFF          // NeoPixelの電源ON/OFFをFET等で制御
+#define POWER_PIN       D1      // NeoPixelの電源制御ピン
 
 // ゆらぎのHSV
 enum{

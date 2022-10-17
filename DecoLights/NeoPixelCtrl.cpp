@@ -202,6 +202,12 @@ void NeoPixelCtrl::begin()
     // 保存データ読み出し
     this->load();
     
+    // NeoPixelの電源制御
+#ifdef POWER_ON_OFF
+    pinMode(POWER_PIN, OUTPUT);
+    digitalWrite(POWER_PIN, HIGH);
+#endif
+    
     // NeoPixelの初期化
     pixels.begin();
     pixels.setBrightness(brightness);

@@ -25,7 +25,7 @@ Seeed XIAO BLE nRF52840 の場合、ボードマネージャで「Seeed nRF52 mb
 ## 結線
 - 既定では、D0ピンにNeoPixelを12個接続します。
 - NeoPixelCtrl.h の LED_PIN および LED_MAX で変更できます。
-- NeoPixelCtrl.h の POWER_ON_OFF を true にすると、NeoPixelの電源ON/OFFをFET等で制御できます。
+- NeoPixelCtrl.h で POWER_ON_OFF を定義すると、NeoPixelの電源ON/OFFをFET等で制御できます。
 - 電源制御ピンは POWER_PIN で指定します。
 
 

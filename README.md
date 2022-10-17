@@ -1,7 +1,7 @@
 # XIAO BLE で NeoPixel
 XIAO BLE で NeoPixel を制御し、Web Bluetooth API でブラウザ上のWebアプリから操作します。
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/QY0mgwFXgrY/0.jpg)](https://www.youtube.com/watch?v=QY0mgwFXgrY)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/lPSR9VkZBbk/0.jpg)](https://www.youtube.com/watch?v=lPSR9VkZBbk)
 
 ## ハードウェア要件
 - Seeed XIAO BLE nRF52840等、ArduinoBLEライブラリ対応Arduinoボード

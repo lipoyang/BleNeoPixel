@@ -206,7 +206,7 @@ void NeoPixelCtrl::begin()
     // NeoPixelの電源制御
 #ifdef POWER_ON_OFF
     pinMode(POWER_PIN, OUTPUT);
-    digitalWrite(POWER_PIN, HIGH);
+    digitalWrite(POWER_PIN, LOW);
 #endif
     
     // NeoPixelの初期化

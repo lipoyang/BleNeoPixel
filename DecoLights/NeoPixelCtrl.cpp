@@ -129,6 +129,7 @@ void NeoPixelCtrl::save()
     data.dC         = dC;
     data.dV         = dV;
     data.pattern    = pattern;
+    data.magicNumber = MAGIC_NUMBER;
     
     int rc = prefs.writePrefs(&data, sizeof(data));
     Serial.println((rc == FDS_SUCCESS) ? "Save OK" : "Save ERROR");

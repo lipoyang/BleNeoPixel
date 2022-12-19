@@ -23,10 +23,9 @@ Seeed XIAO BLE nRF52840 の場合、ボードマネージャで「Seeed nRF52 mb
 - NanoBLEFlashPrefs
 
 ## 結線
-- 既定では、D0ピンにNeoPixelを12個接続します。
-- NeoPixelCtrl.h の LED_PIN および LED_MAX で変更できます。
-- NeoPixelCtrl.h で POWER_ON_OFF を定義すると、NeoPixelの電源ON/OFFをFET等で制御できます。
-- 電源制御ピンは POWER_PIN で指定します。
-
-
-
+- NeoPixelの制御ピンは、NeoPixelCtrl.h の LED_PIN で設定します。(既定は D0 ピン)
+- NeoPixelの個数は、NeoPixelCtrl.h の LED_MAX で設定します。 (既定は16個)
+- NeoPixelCtrl.h で POWER_ON_OFF を定義すると、NeoPixelの電源をFET等で制御できます。(既定で有効) 
+- 電源制御ピンは NeoPixelCtrl.h の POWER_PIN で指定します。 (既定は D1 ピン)
+- DecoLights.ino の PIN_VBUS で設定したピンでVBUSを検出します。 (既定は D2 ピン)
+- VBUSを検出した場合はシリアルポート接続を待機します。

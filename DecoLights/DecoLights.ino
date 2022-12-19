@@ -1,14 +1,20 @@
 #include "NeoPixelCtrl.h"
 #include "BleNeoPixel.h"
 
+#define PIN_VBUS  D2  // USB接続検出用
+
 NeoPixelCtrl neoPixelCtrl;
 BleNeoPixel bleNeoPixel;
 
 // 初期化
 void setup()
 {
+    pinMode(D2, INPUT_PULLDOWN);
     Serial.begin(115200);
-    delay(500);
+    delay(100);
+    if(digitalRead(D2) == HIGH){
+      while(!Serial){;}
+    }
     Serial.println("Hello!");
     
     neoPixelCtrl.begin();
